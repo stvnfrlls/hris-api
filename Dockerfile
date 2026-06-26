@@ -25,6 +25,5 @@ RUN php artisan route:cache || true
 
 EXPOSE 10000
 
-CMD php artisan migrate:fresh --force && \
-    php artisan db:seed --class=RoleSeeder --force && \
+CMD php artisan migrate --force && \
     php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
