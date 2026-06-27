@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Department;
 use App\Models\Employee;
+use App\Models\Position;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,12 +20,14 @@ class EmployeeFactory extends Factory
      */
     public function definition(): array
     {
+        $department = Department::factory()->create();
+        $position   = Position::factory()->create(['department_id' => $department->id]);
+        
         return [
             'user_id'         => User::factory(),
             'employee_code'   => 'EMP-' . $this->faker->unique()->numberBetween(100, 999),
-            'department'      => $this->faker->randomElement(['Engineering', 'HR', 'Finance', 'Operations']),
-            'position'        => $this->faker->jobTitle(),
-            'employment_type' => $this->faker->randomElement(['full_time', 'part_time', 'contractual']),
+            'department_id'   => $department->id,
+            'position_id'     => $position->id,
             'hire_date'       => $this->faker->date(),
             'status'          => 'active',
         ];

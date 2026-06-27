@@ -14,8 +14,8 @@ class Employee extends Model
     protected $fillable = [
         'user_id',
         'employee_code',
-        'department',
-        'position',
+        'department_id',
+        'position_id',
         'employment_type',
         'hire_date',
         'status',
@@ -36,5 +36,15 @@ class Employee extends Model
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function position(): BelongsTo
+    {
+        return $this->belongsTo(Position::class);
     }
 }

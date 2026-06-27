@@ -26,9 +26,8 @@ class UpdateEmployeeRequest extends FormRequest
 
         return [
             'employee_code'   => "sometimes|string|unique:employees,employee_code,{$employeeId}",
-            'department'      => 'sometimes|string|max:100',
-            'position'        => 'sometimes|string|max:100',
-            'employment_type' => 'sometimes|in:full_time,part_time,contractual',
+            'department_id'      => 'sometimes|exists:departments,id',
+            'position_id'        => 'sometimes|exists:positions,id',
             'hire_date'       => 'sometimes|date',
             'status'          => 'sometimes|in:active,inactive,terminated',
         ];

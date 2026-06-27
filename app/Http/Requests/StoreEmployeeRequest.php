@@ -25,9 +25,8 @@ class StoreEmployeeRequest extends FormRequest
         return [
             'user_id'         => 'required|exists:users,id|unique:employees,user_id',
             'employee_code'   => 'required|string|unique:employees,employee_code',
-            'department'      => 'required|string|max:100',
-            'position'        => 'required|string|max:100',
-            'employment_type' => 'required|in:full_time,part_time,contractual',
+            'department_id'      => 'required|exists:departments,id',
+            'position_id'        => 'required|exists:positions,id',
             'hire_date'       => 'required|date',
             'status'          => 'sometimes|in:active,inactive,terminated',
         ];

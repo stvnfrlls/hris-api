@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\EmployeeController;
+use App\Http\Controllers\Api\PositionController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -25,4 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{attendance}', [AttendanceController::class, 'show']);
         Route::put('{attendance}', [AttendanceController::class, 'update']);
     });
+
+    Route::apiResource('departments', DepartmentController::class);
+    Route::apiResource('positions', PositionController::class);
 });

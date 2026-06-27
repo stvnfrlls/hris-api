@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Department;
 use App\Models\Employee;
+use App\Models\Position;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -18,14 +20,23 @@ class EmployeeTest extends TestCase
         $this->artisan('db:seed', ['--class' => 'RoleSeeder']);
     }
 
-    private function employeePayload(int $userId): array
+    private function makeDepartmentAndPosition(): array
+    {
+        $department = Department::factory()->create();
+        $position   = Position::factory()->create([
+            'department_id' => $department->id,
+        ]);
+
+        return [$department->id, $position->id];
+    }
+
+    private function employeePayload(int $userId, int $departmentId, int $positionId): array
     {
         return [
             'user_id'         => $userId,
             'employee_code'   => 'EMP-001',
-            'department'      => 'Engineering',
-            'position'        => 'Backend Developer',
-            'employment_type' => 'full_time',
+            'department_id'   => $departmentId,
+            'position_id'     => $positionId,
             'hire_date'       => '2024-01-15',
             'status'          => 'active',
         ];
@@ -53,12 +64,12 @@ class EmployeeTest extends TestCase
     {
         $this->loginAs('admin');
         $targetUser = User::factory()->create();
+        [$deptId, $posId] = $this->makeDepartmentAndPosition();
 
-        $this->postJson('/api/employees', $this->employeePayload($targetUser->id))
+        $this->postJson('/api/employees', $this->employeePayload($targetUser->id, $deptId, $posId))
             ->assertStatus(201)
             ->assertJsonFragment([
                 'employee_code' => 'EMP-001',
-                'department'    => 'Engineering',
             ]);
 
         $this->assertDatabaseHas('employees', ['employee_code' => 'EMP-001']);
@@ -68,8 +79,9 @@ class EmployeeTest extends TestCase
     {
         $this->loginAs('hr');
         $targetUser = User::factory()->create();
+        [$deptId, $posId] = $this->makeDepartmentAndPosition();
 
-        $this->postJson('/api/employees', $this->employeePayload($targetUser->id))
+        $this->postJson('/api/employees', $this->employeePayload($targetUser->id, $deptId, $posId))
             ->assertStatus(201);
     }
 
@@ -77,8 +89,9 @@ class EmployeeTest extends TestCase
     {
         $this->loginAs('employee');
         $targetUser = User::factory()->create();
+        [$deptId, $posId] = $this->makeDepartmentAndPosition();
 
-        $this->postJson('/api/employees', $this->employeePayload($targetUser->id))
+        $this->postJson('/api/employees', $this->employeePayload($targetUser->id, $deptId, $posId))
             ->assertStatus(403);
     }
 
@@ -114,12 +127,13 @@ class EmployeeTest extends TestCase
     {
         $this->loginAs('admin');
         $employee = Employee::factory()->create();
+        [$deptId, $posId] = $this->makeDepartmentAndPosition();
 
         $this->putJson("/api/employees/{$employee->id}", [
-            'department' => 'HR',
-            'position'   => 'HR Manager',
+            'department_id' => $deptId,
+            'position_id'   => $posId,
         ])->assertOk()
-            ->assertJsonFragment(['department' => 'HR']);
+            ->assertJsonFragment(['id' => $employee->id]);
     }
 
     public function test_admin_can_delete_employee(): void
@@ -143,9 +157,8 @@ class EmployeeTest extends TestCase
             ->assertJsonValidationErrors([
                 'user_id',
                 'employee_code',
-                'department',
-                'position',
-                'employment_type',
+                'department_id',
+                'position_id',
                 'hire_date',
             ]);
     }
@@ -155,8 +168,9 @@ class EmployeeTest extends TestCase
         $this->loginAs('admin');
         Employee::factory()->create(['employee_code' => 'EMP-001']);
         $targetUser = User::factory()->create();
+        [$deptId, $posId] = $this->makeDepartmentAndPosition();
 
-        $this->postJson('/api/employees', $this->employeePayload($targetUser->id))
+        $this->postJson('/api/employees', $this->employeePayload($targetUser->id, $deptId, $posId))
             ->assertStatus(422)
             ->assertJsonValidationErrors(['employee_code']);
     }
