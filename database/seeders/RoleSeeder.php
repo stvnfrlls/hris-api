@@ -33,6 +33,11 @@ class RoleSeeder extends Seeder
             'create positions',
             'update positions',
             'delete positions',
+            // leave
+            'view leave requests',
+            'create leave requests',
+            'review leave requests',
+            'manage leave types',
         ];
 
         foreach ($permissions as $perm) {
@@ -60,6 +65,8 @@ class RoleSeeder extends Seeder
             'view positions',
             'create positions',
             'update positions',
+            'view leave requests',
+            'review leave requests',
         ]);
 
         // employee can only view their own data and clock in/out
@@ -68,6 +75,8 @@ class RoleSeeder extends Seeder
             'clock in out',
             'view departments',
             'view positions',
+            'view leave requests',
+            'create leave requests',
         ]);
     }
 }

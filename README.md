@@ -12,6 +12,8 @@ A RESTful API for Human Resource Information System built with Laravel. Handles 
 - Attendance tracking with clock-in/clock-out
 - Late detection and attendance status management
 - Admin attendance override
+- Leave management (apply, approve, reject, cancel)
+- Leave balance tracking per employee per year
 
 ## Tech Stack
 
@@ -37,6 +39,10 @@ A RESTful API for Human Resource Information System built with Laravel. Handles 
 | View own attendance | ✅ | ✅ | ✅ |
 | View all attendance | ✅ | ✅ | ❌ |
 | Update attendance | ✅ | ✅ | ❌ |
+| Apply for leave | ✅ | ✅ | ✅ |
+| Approve / Reject leave | ✅ | ✅ | ❌ |
+| Cancel own leave | ✅ | ✅ | ✅ |
+| Manage leave types | ✅ | ❌ | ❌ |
 
 ## Getting Started
 
@@ -75,6 +81,7 @@ Run migrations and seeders:
 php artisan migrate
 php artisan db:seed --class=RoleSeeder
 php artisan db:seed --class=DepartmentSeeder
+php artisan db:seed --class=LeaveTypeSeeder
 ```
 
 Start the server:
@@ -127,13 +134,36 @@ DELETE /api/positions/{id}
 POST   /api/attendance/clock-in
 POST   /api/attendance/clock-out
 GET    /api/attendance
+GET    /api/attendance?date={date}
+GET    /api/attendance?status={status}
 GET    /api/attendance/{id}
 PUT    /api/attendance/{id}
+```
+
+### Leave Types
+```
+GET    /api/leave-types
+POST   /api/leave-types
+PUT    /api/leave-types/{id}
+DELETE /api/leave-types/{id}
+```
+
+### Leave Requests
+```
+GET    /api/leave-requests
+GET    /api/leave-requests?status={status}
+POST   /api/leave-requests
+GET    /api/leave-requests/balance
+GET    /api/leave-requests/{id}
+POST   /api/leave-requests/{id}/approve
+POST   /api/leave-requests/{id}/reject
+POST   /api/leave-requests/{id}/cancel
 ```
 
 ## Running Tests
 
 ```bash
+# Run all tests
 php artisan test
 
 # Run with verbose output
@@ -143,7 +173,7 @@ php artisan test --verbose
 php artisan test tests/Feature/AttendanceTest.php
 ```
 
-**54 test cases across 5 suites:**
+**85 test cases across 7 suites:**
 
 | Suite | Tests |
 |---|---|
@@ -152,6 +182,9 @@ php artisan test tests/Feature/AttendanceTest.php
 | AttendanceTest | 12 |
 | DepartmentTest | 11 |
 | PositionTest | 12 |
+| LeaveTypeTest | 8 |
+| LeaveRequestTest | 18 |
+| **Total** | **85** |
 
 Set up a separate test database in `.env.testing`:
 
