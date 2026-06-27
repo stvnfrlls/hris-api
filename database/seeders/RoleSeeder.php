@@ -23,6 +23,16 @@ class RoleSeeder extends Seeder
             'view attendance',
             'manage attendance',
             'clock in out',
+            // departments
+            'view departments',
+            'create departments',
+            'update departments',
+            'delete departments',
+            // positions
+            'view positions',
+            'create positions',
+            'update positions',
+            'delete positions',
         ];
 
         foreach ($permissions as $perm) {
@@ -36,19 +46,28 @@ class RoleSeeder extends Seeder
         // admin gets everything
         $admin->syncPermissions($permissions);
 
-        // hr can manage employees and attendance
+        // hr can manage employees, attendance, departments, and positions
+        // but cannot delete departments or positions
         $hr->syncPermissions([
             'view employees',
             'create employees',
             'update employees',
             'view attendance',
             'manage attendance',
+            'view departments',
+            'create departments',
+            'update departments',
+            'view positions',
+            'create positions',
+            'update positions',
         ]);
 
         // employee can only view their own data and clock in/out
         $employee->syncPermissions([
             'view attendance',
             'clock in out',
+            'view departments',
+            'view positions',
         ]);
     }
 }
