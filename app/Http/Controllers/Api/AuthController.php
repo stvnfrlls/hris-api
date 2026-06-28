@@ -12,6 +12,8 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        abort_unless($request->user()->hasRole(['admin', 'hr']), 403);
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
