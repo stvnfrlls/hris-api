@@ -28,7 +28,7 @@ class StoreEmployeeRequest extends FormRequest
             'department_id'      => 'required|exists:departments,id',
             'position_id'        => 'required|exists:positions,id',
             'hire_date'       => 'required|date',
-            'status'          => 'sometimes|in:active,inactive,terminated',
+            'status'          => 'required|in:active,inactive,terminated',
         ];
     }
 }
