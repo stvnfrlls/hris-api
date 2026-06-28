@@ -5,10 +5,11 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Traits\AuthHelper;
 
 class AuthTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, AuthHelper;
 
     protected function setUp(): void
     {
@@ -18,6 +19,8 @@ class AuthTest extends TestCase
 
     public function test_user_can_register(): void
     {
+        $this->loginAs('admin');
+
         $response = $this->postJson('/api/auth/register', [
             'name'                  => 'John Doe',
             'email'                 => 'john@example.com',
@@ -37,6 +40,8 @@ class AuthTest extends TestCase
 
     public function test_register_requires_valid_fields(): void
     {
+        $this->loginAs('admin');
+
         $this->postJson('/api/auth/register', [])
             ->assertStatus(422)
             ->assertJsonValidationErrors(['name', 'email', 'password']);
@@ -44,6 +49,8 @@ class AuthTest extends TestCase
 
     public function test_register_prevents_duplicate_email(): void
     {
+        $this->loginAs('admin');
+
         User::factory()->create(['email' => 'john@example.com']);
 
         $this->postJson('/api/auth/register', [

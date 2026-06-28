@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Employee extends Model
 {
@@ -56,5 +57,15 @@ class Employee extends Model
     public function leaveBalances(): HasMany
     {
         return $this->hasMany(LeaveBalance::class);
+    }
+
+    public function salaryDetail(): HasOne
+    {
+        return $this->hasOne(SalaryDetail::class);
+    }
+
+    public function payRoll(): HasMany
+    {
+        return $this->hasMany(Payroll::class);
     }
 }
