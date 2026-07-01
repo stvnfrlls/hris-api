@@ -14,6 +14,8 @@ A RESTful API for Human Resource Information System built with Laravel. Handles 
 - Admin attendance override
 - Leave management (apply, approve, reject, cancel)
 - Leave balance tracking per employee per year
+- Payroll computation (semi-monthly, with SSS/PhilHealth/Pag-IBIG deductions)
+- Reports & Analytics (attendance summary, tardiness, payroll summary, headcount)
 
 ## Tech Stack
 
@@ -43,6 +45,13 @@ A RESTful API for Human Resource Information System built with Laravel. Handles 
 | Approve / Reject leave | ✅ | ✅ | ❌ |
 | Cancel own leave | ✅ | ✅ | ✅ |
 | Manage leave types | ✅ | ❌ | ❌ |
+| Manage salary | ✅ | ✅ | ❌ |
+| Create payroll periods | ✅ | ❌ | ❌ |
+| Generate payroll | ✅ | ❌ | ❌ |
+| Release payroll | ✅ | ❌ | ❌ |
+| View own payroll | ✅ | ✅ | ✅ |
+| View all payroll | ✅ | ✅ | ❌ |
+| View reports | ✅ | ✅ | ❌ |
 
 ## Getting Started
 
@@ -94,7 +103,7 @@ php artisan serve
 
 ### Auth
 ```
-POST   /api/auth/register
+POST   /api/auth/register   (admin only)
 POST   /api/auth/login
 GET    /api/auth/me
 POST   /api/auth/logout
@@ -160,6 +169,42 @@ POST   /api/leave-requests/{id}/reject
 POST   /api/leave-requests/{id}/cancel
 ```
 
+### Salary
+```
+GET    /api/salary
+POST   /api/salary
+GET    /api/salary/{employee_id}
+PUT    /api/salary/{employee_id}
+```
+
+### Payroll Periods
+```
+GET    /api/payroll-periods
+POST   /api/payroll-periods
+GET    /api/payroll-periods/{id}
+```
+
+### Payroll
+```
+GET    /api/payroll
+GET    /api/payroll?period_id={id}
+GET    /api/payroll?year={year}
+POST   /api/payroll/generate
+GET    /api/payroll/{id}
+POST   /api/payroll/{id}/release
+```
+
+### Reports
+```
+GET    /api/reports/attendance-summary
+GET    /api/reports/attendance-summary?month={month}&year={year}
+GET    /api/reports/tardiness
+GET    /api/reports/tardiness?month={month}&year={year}
+GET    /api/reports/payroll-summary
+GET    /api/reports/payroll-summary?payroll_period_id={id}
+GET    /api/reports/headcount
+```
+
 ## Running Tests
 
 ```bash
@@ -173,7 +218,7 @@ php artisan test --verbose
 php artisan test tests/Feature/AttendanceTest.php
 ```
 
-**85 test cases across 7 suites:**
+**133 test cases across 11 suites:**
 
 | Suite | Tests |
 |---|---|
@@ -184,7 +229,11 @@ php artisan test tests/Feature/AttendanceTest.php
 | PositionTest | 12 |
 | LeaveTypeTest | 8 |
 | LeaveRequestTest | 18 |
-| **Total** | **85** |
+| SalaryDetailTest | 11 |
+| PayrollPeriodTest | 8 |
+| PayrollTest | 15 |
+| ReportTest | 19 |
+| **Total** | **133** |
 
 Set up a separate test database in `.env.testing`:
 
